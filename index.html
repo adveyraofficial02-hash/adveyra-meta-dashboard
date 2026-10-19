@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ADVEYRA Meta Manager</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eef2ff;font:16px system-ui,Arial,sans-serif}main{max-width:900px;margin:auto;padding:28px 18px}
+.brand{font-size:24px;font-weight:800;letter-spacing:2px}.sub{color:#9ba9c5;font-size:12px;letter-spacing:2px}
+.card{background:#121c32;border:1px solid #2a3956;border-radius:16px;padding:22px;margin-top:20px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.1}p{color:#c1cbe0;line-height:1.6}
+button,.btn{display:inline-block;border:0;border-radius:10px;padding:13px 17px;background:#1877f2;color:#fff;font-weight:700;text-decoration:none;cursor:pointer}
+.secondary{background:#273550}.status{display:inline-block;border-radius:20px;padding:7px 12px;background:#202d45;color:#fbbf24;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.tile{background:#0d1528;border:1px solid #2a3956;border-radius:12px;padding:16px}.tile b{display:block;font-size:20px;margin-top:7px}
+.small{font-size:13px;color:#92a0bb}.note{border-left:3px solid #818cf8;background:#17233d;padding:12px;border-radius:6px}
+</style></head><body><main>
+<div class="brand">ADVEYRA</div><div class="sub">META ADS MANAGER · EXPERIMENTAL</div>
+<h1>Manage your Meta workspace.</h1><p>Begin by testing a secure Facebook OAuth connection.</p>
+<div class="card"><span class="status" id="status">Checking backend…</span><h2>Connect Meta account</h2>
+<p>Use the button to start the official Meta login flow. The app secret is kept on the server.</p>
+<a class="btn" href="/api/meta/auth">Continue with Facebook</a>
+<button class="secondary" id="check">Check backend</button><p class="small" id="details">Checking health endpoint…</p></div>
+<div class="card"><h2>Workspace status</h2><div class="grid">
+<div class="tile"><span class="small">Meta connection</span><b id="conn">Not connected</b></div>
+<div class="tile"><span class="small">Campaign insights</span><b>Not loaded</b></div>
+<div class="tile"><span class="small">Access mode</span><b>Read-only setup</b></div></div>
+<p class="note">This starter tests OAuth only. It does not save access tokens, load campaign insights, or create/publish ads. Real ad account features need additional Meta permissions and secure token/session storage.</p></div>
+<p class="small">Never put META_APP_SECRET or access tokens in this HTML file.</p>
+</main><script>
+async function check(){try{const r=await fetch('/api/health');const d=await r.json();document.getElementById('status').textContent=d.ok?'Backend online':'Backend error';document.getElementById('status').style.color=d.ok?'#86efac':'#fca5a5';document.getElementById('details').textContent='Meta OAuth variables: '+(d.metaConfigured?'configured':'missing')+'.'}catch(e){document.getElementById('status').textContent='Backend unavailable';document.getElementById('details').textContent='Deploy the full project, including netlify/functions and netlify.toml.'}}
+document.getElementById('check').onclick=check;const q=new URLSearchParams(location.search);if(q.get('meta')==='success')document.getElementById('conn').textContent='OAuth test passed (not saved)';if(q.get('meta')==='error')document.getElementById('conn').textContent='Login failed';check();
+</script></body></html>
